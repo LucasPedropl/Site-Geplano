@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react';
-import { CheckCircle2, HardDrive, KeyRound, Chrome, ShieldAlert, Plus, Trash2, Save, AlertTriangle, FileImage } from 'lucide-react';
+import { KeyRound, ShieldAlert, Plus, Trash2, AlertTriangle } from 'lucide-react';
 import { doc, getDoc, setDoc } from 'firebase/firestore';
 import { db, auth } from '../../../services/firebase';
 
@@ -75,47 +75,6 @@ export const FirebaseSetupGuide: React.FC = () => {
 
   return (
     <div className="max-w-4xl mx-auto space-y-8 pb-20 animate-fade-in-up">
-        
-        {/* --- CABEÇALHO --- */}
-        <div className="bg-white p-8 rounded-xl shadow-sm border border-green-100 flex flex-col md:flex-row items-center md:items-start gap-6">
-            <div className="w-16 h-16 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
-                <CheckCircle2 size={32} />
-            </div>
-            <div className="flex-grow text-center md:text-left">
-                <h2 className="text-2xl font-bold text-gray-900 mb-2">Banco de Dados e Configurações</h2>
-                <p className="text-gray-600 leading-relaxed">
-                    Gerencie quem pode acessar este painel e entenda como as imagens estão sendo salvas.
-                </p>
-            </div>
-        </div>
-
-        {/* --- RESPOSTA 1: UPLOAD DE IMAGENS --- */}
-        <div className="bg-white p-6 rounded-xl shadow-sm border border-gray-200">
-            <div className="flex items-center gap-3 mb-4 text-geplano-green">
-                <FileImage size={24} />
-                <h3 className="font-bold text-xl">Upload de Imagens (Solução Simples)</h3>
-            </div>
-            <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-4">
-                <h4 className="font-bold text-blue-900 text-sm mb-2">Sua Pergunta:</h4>
-                <p className="text-blue-800 text-sm italic">
-                    "Gostaria de manter a funcionalidade de upload de imagem, para facilitar pro cliente, existe outra solução simples para resolver isso?"
-                </p>
-            </div>
-            <div className="space-y-3 text-gray-700 leading-relaxed text-sm md:text-base">
-                <p>
-                    <strong>Sim, existe!</strong> Implementamos agora um sistema de <strong>conversão interna (Base64)</strong>.
-                </p>
-                <p>
-                    Quando o cliente clica em "Carregar Imagem" no formulário, o sistema pega a foto, <strong>comprime automaticamente</strong> para reduzir o tamanho, e salva o código da imagem diretamente dentro do texto do site (Firestore).
-                </p>
-                <ul className="list-disc list-inside bg-gray-50 p-4 rounded-lg space-y-2 mt-2">
-                    <li><span className="font-bold text-green-600">Vantagem:</span> O cliente volta a ter o botão "Upload" simples e fácil. Não precisa hospedar em outros sites.</li>
-                    <li><span className="font-bold text-orange-500">Atenção:</span> Como não usamos o Storage dedicado, existe um limite de tamanho. O sistema comprime as imagens automaticamente para garantir que caibam no banco de dados gratuito.</li>
-                </ul>
-            </div>
-        </div>
-
-        {/* --- RESPOSTA 2: CONTROLE DE ACESSO --- */}
         <div className="bg-white p-6 rounded-xl shadow-sm border border-geplano-gold/30 relative overflow-hidden">
             <div className="absolute top-0 left-0 w-1 h-full bg-geplano-gold"></div>
             <div className="flex items-center gap-3 mb-6 text-gray-900">
@@ -124,12 +83,12 @@ export const FirebaseSetupGuide: React.FC = () => {
             </div>
             
             <div className="bg-blue-50 p-4 rounded-lg border border-blue-100 mb-6">
-                <h4 className="font-bold text-blue-900 text-sm mb-2">Sua Pergunta:</h4>
-                <p className="text-blue-800 text-sm italic">
-                    "Sobre o login com o google... devo configurar quais contas google conseguem realiza-lo? ou qualquer uma consegue?"
+                <h4 className="font-bold text-blue-900 text-sm mb-2">Sobre esta seção</h4>
+                <p className="text-blue-800 text-sm">
+                    Este painel controla a whitelist usada pelo login com Google. Somente os e-mails autorizados aqui conseguem abrir o Dashboard Administrativo.
                 </p>
                 <p className="text-blue-900 text-sm mt-2 font-bold">
-                    Resposta: Configuramos agora para que APENAS os e-mails listados abaixo tenham acesso.
+                    Adicione ou remova e-mails para liberar ou revogar o acesso imediatamente.
                 </p>
             </div>
 
