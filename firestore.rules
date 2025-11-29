@@ -1,0 +1,30 @@
+rules_version = '2';
+service cloud.firestore {
+  match /databases/{database}/documents {
+    function whitelistSettings() {
+      return get(/databases/$(database)/documents/geplano_config/settings);
+    }
+
+    function isWhitelisted() {
+      return request.auth != null &&
+             whitelistSettings().data.allowed_emails != null &&
+             whitelistSettings().data.allowed_emails.hasAny([request.auth.token.email]);
+    }
+
+    // Coleção usada para armazenar a whitelist e outras configs sensíveis
+    match /geplano_config/{document=**} {
+      allow read, write: if isWhitelisted();
+    }
+
+    // Conteúdo do site pode ser lido publicamente, mas apenas admins alteram
+    match /geplano_data/{document=**} {
+      allow read: if true;
+      allow write: if isWhitelisted();
+    }
+
+    // Bloqueia qualquer outra coleção por padrão
+    match /{document=**} {
+      allow read, write: if false;
+    }
+  }
+}
