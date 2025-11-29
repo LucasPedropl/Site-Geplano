@@ -12,8 +12,8 @@ const PORTAL_URL =
 	'https://www.obraprimaweb.com.br/portalcliente/geplanoengenharia';
 
 // Em Vite, arquivos em /public são servidos na raiz
-const WHITE_LOGO_SRC = '/logo1.png';
-const BLACK_LOGO_SRC = '/logo2.png';
+const WHITE_LOGO_SRC = '/LogoBrancaGrande.png';
+const BLACK_LOGO_SRC = '/LogoPretaGrande.png';
 
 interface HeaderProps {
 	data: SiteData['header'];
