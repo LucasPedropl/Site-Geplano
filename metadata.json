@@ -1,0 +1,5 @@
+{
+  "name": "Geplano Web System",
+  "description": "A React application featuring a public landing page and a content management admin dashboard for Geplano Engineering.",
+  "requestFramePermissions": []
+}
