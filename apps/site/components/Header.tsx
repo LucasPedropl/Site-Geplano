@@ -170,7 +170,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 				{/* LOGO AREA */}
 				<a
 					href="#home"
-					className="relative h-10 md:h-12 lg:h-14 xl:h-16 w-32 md:w-40 lg:w-48 xl:w-56 flex-shrink-0 transition-all duration-300"
+					className="relative h-14 md:h-16 lg:h-[4.75rem] xl:h-[5.5rem] w-40 md:w-48 lg:w-60 xl:w-72 flex-shrink-0 transition-all duration-300"
 				>
 					{/* Branca (White) */}
 					<img

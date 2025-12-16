@@ -104,6 +104,11 @@ export const SiteApp: React.FC = () => {
 						</p>
 					</Reveal>
 				</div>
+				<Reveal className="text-center mb-8">
+					<h3 className="text-2xl md:text-3xl font-display font-black text-gray-900 uppercase">
+						{data.mission_vision_values.values_title}
+					</h3>
+				</Reveal>
 				<div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
 					{data.mission_vision_values.values_list.map((val, i) => (
 						<Reveal
