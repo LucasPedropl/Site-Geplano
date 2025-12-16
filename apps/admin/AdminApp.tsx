@@ -16,7 +16,6 @@ import {
 	RotateCcw,
 	Monitor,
 	LayoutDashboard,
-	Users,
 	Briefcase,
 	Phone,
 	Layers,
@@ -162,7 +161,6 @@ type SectionKey =
 	| 'hero'
 	| 'about'
 	| 'mission'
-	| 'team'
 	| 'solution'
 	| 'differentiators'
 	| 'projects'
@@ -194,7 +192,7 @@ export const AdminApp: React.FC = () => {
 				auth,
 				async (currentUser) => {
 					if (currentUser) {
-						// Check Whitelist in Firestore
+						// Check Whitelist in Firestore - acesso somente se email autorizado
 						try {
 							if (db && currentUser.email) {
 								const docRef = doc(
@@ -204,29 +202,44 @@ export const AdminApp: React.FC = () => {
 								);
 								const docSnap = await getDoc(docRef);
 
-								if (docSnap.exists()) {
-									const allowedEmails = docSnap.data()
-										.allowed_emails as string[];
-									if (
-										allowedEmails &&
-										allowedEmails.length > 0 &&
-										!allowedEmails.includes(
-											currentUser.email
-										)
-									) {
-										await signOut(auth);
-										setAccessError(
-											`Acesso negado para ${currentUser.email}. Contate o administrador.`
-										);
-										setUser(null);
-										setAuthChecking(false);
-										return;
-									}
+								const allowedEmails = docSnap.exists()
+									? (docSnap.data()
+											.allowed_emails as string[])
+									: null;
+								const isAllowedList =
+									Array.isArray(allowedEmails) &&
+									allowedEmails.length > 0;
+								const isAllowed =
+									isAllowedList &&
+									allowedEmails.includes(currentUser.email);
+
+								if (!isAllowed) {
+									await signOut(auth);
+									setAccessError(
+										'Acesso negado. Seu email não está na lista de permissões.'
+									);
+									setUser(null);
+									setAuthChecking(false);
+									return;
 								}
+							} else {
+								await signOut(auth);
+								setAccessError(
+									'Não foi possível validar a whitelist. Acesso negado.'
+								);
+								setUser(null);
+								setAuthChecking(false);
+								return;
 							}
 						} catch (e) {
 							console.error('Erro ao verificar whitelist:', e);
-							// Em caso de erro de rede, talvez permitir ou bloquear? Vamos permitir mas logar.
+							await signOut(auth);
+							setAccessError(
+								'Não foi possível verificar a whitelist. Acesso negado.'
+							);
+							setUser(null);
+							setAuthChecking(false);
+							return;
 						}
 
 						setAccessError('');
@@ -335,7 +348,23 @@ export const AdminApp: React.FC = () => {
 			</div>
 		);
 
-	if (!user && auth)
+	// Se o Firebase não estiver configurado, bloqueia acesso ao painel
+	if (!auth)
+		return (
+			<div className="flex h-screen items-center justify-center bg-gray-50 text-center px-4">
+				<div className="space-y-4 max-w-md">
+					<p className="text-lg font-bold text-red-600">
+						Autenticação não configurada.
+					</p>
+					<p className="text-sm text-gray-600">
+						Defina as variáveis VITE_FIREBASE_* e publique novamente
+						para ativar o login seguro.
+					</p>
+				</div>
+			</div>
+		);
+
+	if (!user)
 		return (
 			<>
 				{accessError && (
@@ -364,7 +393,6 @@ export const AdminApp: React.FC = () => {
 		},
 		{ id: 'about', label: 'Sobre Nós', icon: <Briefcase size={20} /> },
 		{ id: 'mission', label: 'Essência', icon: <CheckCircle2 size={20} /> },
-		{ id: 'team', label: 'Equipe', icon: <Users size={20} /> },
 		{ id: 'solution', label: 'Solução', icon: <Layers size={20} /> },
 		{
 			id: 'differentiators',
@@ -834,145 +862,6 @@ export const AdminApp: React.FC = () => {
 					</div>
 				);
 
-			case 'team':
-				return (
-					<SectionCard title="Equipe / Sócios" id="team">
-						<Field label="Título da Seção">
-							<Input
-								value={data.team.title}
-								onChange={(v) =>
-									setData({
-										...data,
-										team: { ...data.team, title: v },
-									})
-								}
-							/>
-						</Field>
-						<div className="space-y-6">
-							{data.team.members.map((member, idx) => (
-								<div
-									key={idx}
-									className="flex flex-col md:flex-row gap-6 bg-gray-50 p-6 rounded-xl border border-gray-100 items-start"
-								>
-									{/* Increased width from w-32 to w-56 for better Image Picker layout */}
-									<div className="w-full md:w-56 flex-shrink-0">
-										<ImagePicker
-											label="Foto do Sócio"
-											currentValue={member.image}
-											onImageSelected={(url) => {
-												const newMembers = [
-													...data.team.members,
-												];
-												newMembers[idx].image = url;
-												setData({
-													...data,
-													team: {
-														...data.team,
-														members: newMembers,
-													},
-												});
-											}}
-										/>
-									</div>
-									<div className="flex-grow w-full space-y-3">
-										<Input
-											placeholder="Nome"
-											className="font-bold bg-white text-gray-900"
-											value={member.name}
-											onChange={(v) => {
-												const newMembers = [
-													...data.team.members,
-												];
-												newMembers[idx].name = v;
-												setData({
-													...data,
-													team: {
-														...data.team,
-														members: newMembers,
-													},
-												});
-											}}
-										/>
-										<Input
-											placeholder="Cargo"
-											className="text-geplano-gold bg-white"
-											value={member.role}
-											onChange={(v) => {
-												const newMembers = [
-													...data.team.members,
-												];
-												newMembers[idx].role = v;
-												setData({
-													...data,
-													team: {
-														...data.team,
-														members: newMembers,
-													},
-												});
-											}}
-										/>
-										<TextArea
-											placeholder="Descrição"
-											rows={4}
-											className="bg-white text-gray-900"
-											value={member.description}
-											onChange={(v) => {
-												const newMembers = [
-													...data.team.members,
-												];
-												newMembers[idx].description = v;
-												setData({
-													...data,
-													team: {
-														...data.team,
-														members: newMembers,
-													},
-												});
-											}}
-										/>
-									</div>
-									<DeleteButton
-										onClick={() => {
-											const newMembers =
-												data.team.members.filter(
-													(_, i) => i !== idx
-												);
-											setData({
-												...data,
-												team: {
-													...data.team,
-													members: newMembers,
-												},
-											});
-										}}
-									/>
-								</div>
-							))}
-							<AddButton
-								label="Adicionar Membro"
-								onClick={() => {
-									const newMembers = [
-										...data.team.members,
-										{
-											name: 'Novo Membro',
-											role: 'Cargo',
-											description: 'Descrição...',
-											image: 'https://picsum.photos/200',
-										},
-									];
-									setData({
-										...data,
-										team: {
-											...data.team,
-											members: newMembers,
-										},
-									});
-								}}
-							/>
-						</div>
-					</SectionCard>
-				);
-
 			case 'solution':
 				return (
 					<div id="solution">
@@ -1377,9 +1266,9 @@ export const AdminApp: React.FC = () => {
 									(feat, idx) => (
 										<div
 											key={idx}
-											className="flex flex-col md:flex-row gap-4 bg-white p-4 rounded border border-gray-100 items-start"
+											className="flex flex-col lg:flex-row gap-6 bg-white p-4 rounded border border-gray-100 items-start"
 										>
-											<div className="flex-grow space-y-2 w-full">
+											<div className="flex-grow space-y-3 w-full">
 												<div className="flex items-center gap-2">
 													<CheckCircle2
 														size={16}
@@ -1407,34 +1296,62 @@ export const AdminApp: React.FC = () => {
 														}}
 													/>
 												</div>
-												<div className="flex items-center gap-2">
-													<ImagePicker
-														label="Imagem da Tela"
-														currentValue={
-															feat.image
-														}
-														onImageSelected={(
-															url
-														) => {
-															const newFeats = [
-																...data
-																	.differentiators
-																	.app_features,
-															];
-															newFeats[
-																idx
-															].image = url;
-															setData({
-																...data,
-																differentiators:
-																	{
-																		...data.differentiators,
-																		app_features:
-																			newFeats,
-																	},
-															});
-														}}
-													/>
+
+												<div className="grid grid-cols-1 md:grid-cols-2 gap-4 items-start">
+													<div className="flex items-center gap-2">
+														<ImagePicker
+															label="Imagem da Tela"
+															currentValue={
+																feat.image
+															}
+															onImageSelected={(
+																url
+															) => {
+																const newFeats =
+																	[
+																		...data
+																			.differentiators
+																			.app_features,
+																	];
+																newFeats[
+																	idx
+																].image = url;
+																setData({
+																	...data,
+																	differentiators:
+																		{
+																			...data.differentiators,
+																			app_features:
+																				newFeats,
+																		},
+																});
+															}}
+														/>
+													</div>
+
+													<div className="w-full flex justify-center">
+														<div className="relative w-40 md:w-48 aspect-[9/19] rounded-3xl border border-gray-200 shadow-inner bg-gray-900 overflow-hidden">
+															<div className="absolute inset-0 bg-gray-800" />
+															<div className="absolute inset-2 rounded-2xl bg-black overflow-hidden">
+																{feat.image ? (
+																	<img
+																		src={
+																			feat.image
+																		}
+																		alt={`Preview ${feat.name}`}
+																		className="w-full h-full object-cover"
+																	/>
+																) : (
+																	<div className="w-full h-full flex items-center justify-center text-gray-500 text-xs">
+																		Pré-visualização
+																	</div>
+																)}
+															</div>
+															<div className="absolute top-1/2 -translate-y-1/2 -left-1.5 w-1 h-12 rounded-full bg-gray-300" />
+															<div className="absolute top-1/2 -translate-y-1/2 -right-1.5 w-1 h-12 rounded-full bg-gray-300" />
+															<div className="absolute bottom-2 left-1/2 -translate-x-1/2 w-12 h-1.5 rounded-full bg-gray-700" />
+														</div>
+													</div>
 												</div>
 											</div>
 											<DeleteButton

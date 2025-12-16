@@ -25,7 +25,6 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 	const navLinks = useMemo(
 		() => [
 			{ label: data.nav_about, href: '#sobre' },
-			{ label: data.nav_team, href: '#equipe' },
 			{ label: data.nav_solution, href: '#solucao' },
 			{ label: data.nav_features, href: '#diferenciais' },
 			{ label: data.nav_projects, href: '#projetos' },
@@ -140,7 +139,8 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 	const SCROLLED_TEXT_CLASS = 'text-gray-800';
 	const TRANSPARENT_TEXT_CLASS = 'text-white shadow-black/20 text-shadow-sm'; // Added text-shadow for better readability on images
 
-	const textClass = isScrolled || isMenuOpen ? SCROLLED_TEXT_CLASS : TRANSPARENT_TEXT_CLASS;
+	const textClass =
+		isScrolled || isMenuOpen ? SCROLLED_TEXT_CLASS : TRANSPARENT_TEXT_CLASS;
 
 	// Logic to show black logo: if scrolled OR menu is open
 	const showBlackLogo = isScrolled || isMenuOpen;
@@ -148,17 +148,18 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 	const desktopLinkClass = (href: string) => {
 		const isActive = activeSection === href;
 		const colorClass = isActive ? 'text-geplano-gold' : textClass;
-		
+
 		// RESPONSIVE FONT SIZE:
 		// text-[11px] on large tablets/small laptops (lg)
 		// text-xs (12px) on desktops (xl)
 		// text-sm (14px) on large screens (2xl - 1920px)
-		const fontSizeClass = 'text-[10px] lg:text-[11px] xl:text-xs 2xl:text-sm';
-		
+		const fontSizeClass =
+			'text-[10px] lg:text-[11px] xl:text-xs 2xl:text-sm';
+
 		const underlineClass = isActive
 			? 'after:absolute after:left-0 after:-bottom-0.5 after:h-0.5 after:w-full after:bg-geplano-gold hover:text-geplano-gold'
 			: 'hover:text-geplano-gold';
-			
+
 		return `${fontSizeClass} font-bold uppercase tracking-wide transition-colors relative pb-1 whitespace-nowrap ${colorClass} ${underlineClass}`;
 	};
 
@@ -166,7 +167,6 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 		<header className={headerClass}>
 			{/* Changed container to fluid width with max constraint for 1920px screens */}
 			<div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 flex justify-between items-center">
-				
 				{/* LOGO AREA */}
 				<a
 					href="#home"
