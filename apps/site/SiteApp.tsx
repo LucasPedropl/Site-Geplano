@@ -105,7 +105,7 @@ export const SiteApp: React.FC = () => {
 					</Reveal>
 				</div>
 				<Reveal className="text-center mb-8">
-					<h3 className="text-2xl md:text-3xl font-display font-black text-gray-900 uppercase">
+					<h3 className="text-2xl md:text-3xl font-display font-black text-geplano-gold uppercase">
 						{data.mission_vision_values.values_title}
 					</h3>
 				</Reveal>
