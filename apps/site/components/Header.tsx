@@ -166,7 +166,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 	return (
 		<header className={headerClass}>
 			{/* Changed container to fluid width with max constraint for 1920px screens */}
-			<div className="w-full max-w-[1920px] mx-auto px-4 sm:px-8 lg:px-12 flex justify-between items-center">
+			<div className="w-full max-w-[1700px] mx-auto px-4 sm:px-8 lg:px-12 xl:px-12 2xl:px-14 flex justify-between items-center">
 				{/* LOGO AREA */}
 				<a
 					href="#home"
@@ -197,7 +197,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 
 				{/* Desktop Nav */}
 				{/* RESPONSIVE GAP: gap-4 (tight) -> gap-6 (normal) -> gap-8 (wide) */}
-				<nav className="hidden lg:flex items-center gap-x-3 xl:gap-x-5 2xl:gap-x-8">
+				<nav className="hidden lg:flex items-center gap-x-3 xl:gap-x-5 2xl:gap-x-6 lg:pl-5 xl:pl-8 2xl:pl-10">
 					{navLinks.map((link) => (
 						<a
 							key={link.href}
@@ -226,7 +226,7 @@ export const Header: React.FC<HeaderProps> = ({ data }) => {
 						href={PORTAL_URL}
 						target="_blank"
 						rel="noopener noreferrer"
-						className="bg-geplano-gold hover:bg-geplano-goldHover text-white px-3 lg:px-5 xl:px-6 py-2 rounded-md text-[10px] lg:text-xs xl:text-sm font-bold uppercase transition-all transform hover:-translate-y-0.5 shadow-sm whitespace-nowrap ml-2"
+						className="bg-geplano-gold hover:bg-geplano-goldHover text-white px-3 lg:px-4 xl:px-5 py-2 rounded-md text-[10px] lg:text-[11px] xl:text-xs font-bold uppercase transition-all transform hover:-translate-y-0.5 shadow-sm whitespace-nowrap ml-1"
 					>
 						{data.nav_portal}
 					</a>
