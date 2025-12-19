@@ -32,7 +32,7 @@ import { ContactSection } from '../../components/admin/sections/ContactSection';
 
 export default function AdminPage() {
 	const [data, setData] = useState<SiteData | null>(null);
-	const [loading, setLoading] = useState(true);
+	const [loading, setLoading] = useState<boolean>(() => Boolean(auth));
 	const [saving, setSaving] = useState(false);
 	const [user, setUser] = useState<User | null>(null);
 	const [isAuthorized, setIsAuthorized] = useState(false);
@@ -49,13 +49,20 @@ export default function AdminPage() {
 			console.warn(
 				'Firebase auth not initialized; skipping auth listener during build.'
 			);
-			setLoading(false);
 			return;
 		}
 
 		const unsubscribe = onAuthStateChanged(auth, async (currentUser) => {
 			setUser(currentUser);
 			if (currentUser) {
+				if (!db) {
+					console.warn(
+						'Firestore not initialized; skipping whitelist checks.'
+					);
+					setIsAuthorized(false);
+					setLoading(false);
+					return;
+				}
 				let authorized = false;
 
 				try {
