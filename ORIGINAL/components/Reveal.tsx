@@ -1,5 +1,3 @@
-'use client';
-
 import React, { useEffect, useRef, useState } from 'react';
 
 interface RevealProps {
@@ -13,12 +11,10 @@ export const Reveal: React.FC<RevealProps> = ({
 	className = '',
 	innerRef,
 }) => {
+	const localRef = useRef<HTMLDivElement>(null);
 	const [isVisible, setIsVisible] = useState(false);
-	const [node, setNode] = useState<HTMLDivElement | null>(null);
 
 	useEffect(() => {
-		if (!node) return;
-
 		const observer = new IntersectionObserver(
 			([entry]) => {
 				if (entry.isIntersecting) {
@@ -29,34 +25,27 @@ export const Reveal: React.FC<RevealProps> = ({
 			{ threshold: 0.1 }
 		);
 
-		observer.observe(node);
+		if (localRef.current) {
+			observer.observe(localRef.current);
+		}
 
 		return () => observer.disconnect();
-	}, [node]);
+	}, []);
 
-	useEffect(() => {
-		if (!innerRef) return;
-
-		const setRef = (
-			ref: React.Ref<HTMLDivElement> | undefined,
-			value: HTMLDivElement | null
-		) => {
-			if (!ref) return;
-			if (typeof ref === 'function') {
-				ref(value);
-			} else if (typeof ref === 'object') {
-				const mutable =
-					ref as React.MutableRefObject<HTMLDivElement | null>;
-				mutable.current = value;
-			}
-		};
-
-		setRef(innerRef, node);
-	}, [innerRef, node]);
+	const setRefs = (node: HTMLDivElement | null) => {
+		localRef.current = node;
+		if (typeof innerRef === 'function') {
+			innerRef(node);
+		} else if (innerRef && 'current' in innerRef) {
+			(
+				innerRef as React.MutableRefObject<HTMLDivElement | null>
+			).current = node;
+		}
+	};
 
 	return (
 		<div
-			ref={setNode}
+			ref={setRefs}
 			className={`transition-all duration-1000 ease-out transform ${
 				isVisible
 					? 'opacity-100 translate-y-0'
