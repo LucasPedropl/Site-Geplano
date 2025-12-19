@@ -50,6 +50,10 @@ export const FirebaseSetupGuide: React.FC = () => {
 		const updatedList = [...allowedEmails, newEmail];
 
 		try {
+			if (!db) {
+				setMsg('Firestore não inicializado.');
+				return;
+			}
 			await setDoc(
 				doc(db, SETTINGS_COLLECTION, SETTINGS_DOC),
 				{ allowed_emails: updatedList },
@@ -73,6 +77,10 @@ export const FirebaseSetupGuide: React.FC = () => {
 				(e) => e !== emailToRemove
 			);
 			try {
+				if (!db) {
+					setMsg('Firestore não inicializado.');
+					return;
+				}
 				await setDoc(
 					doc(db, SETTINGS_COLLECTION, SETTINGS_DOC),
 					{ allowed_emails: updatedList },
