@@ -8,7 +8,7 @@ export default function sitemap(): MetadataRoute.Sitemap {
 		{ url: `${SITE_URL}/sobre`, lastModified: new Date().toISOString() },
 		{ url: `${SITE_URL}/projetos`, lastModified: new Date().toISOString() },
 		{ url: `${SITE_URL}/contato`, lastModified: new Date().toISOString() },
-		{ url: `${SITE_URL}/admin`, lastModified: new Date().toISOString() },
+		// admin removed from sitemap: do not expose private/admin pages
 	];
 
 	// If you have dynamic routes (projects, posts), fetch them here and push to the array.
